@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Para ti 🌹</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --rose:  #d4607a;
+      --blush: #f2c4ce;
+      --cream: #fdf6f0;
+      --deep:  #3a1a22;
+      --gold:  #c9a96e;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    body {
+      background: var(--deep);
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    /* ── Particles ── */
+    #particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Frame ocupa toda la pantalla ── */
+    .frame {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .frame::before {
+      content: '';
+      position: absolute;
+      inset: 14px;
+      border: 1px solid rgba(201,169,110,.22);
+      border-radius: 2px;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* ── Slides ── */
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      opacity: 0;
+      transition: opacity .9s ease;
+      pointer-events: none;
+    }
+    .slide.active { opacity: 1; pointer-events: auto; }
+
+    .slide-img {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.06);
+      transition: transform 6s ease;
+    }
+    .slide.active .slide-img { transform: scale(1); }
+
+    .bg-1 { background-color: #6b2737; }
+    .bg-2 { background-color: #1a3a4a; }
+    .bg-3 { background-color: #3a2a10; }
+    .bg-4 { background-color: #2a1040; }
+    .bg-5 { background-color: #0d2e1a; }
+    .bg-6 { background-color: #3a1520; }
+    .bg-7 { background-color: #1a2a40; }
+
+    .slide-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(10,2,6,.0)   0%,
+        rgba(10,2,6,.0)   35%,
+        rgba(10,2,6,.65)  65%,
+        rgba(10,2,6,.93) 100%
+      );
+      z-index: 2;
+    }
+
+    /* ── Text block ── */
+    .slide-text {
+      position: relative;
+      z-index: 4;
+      width: 100%;
+      padding: 0 28px calc(80px + env(safe-area-inset-bottom, 0px)) 28px;
+    }
+    .slide-text .number {
+      font-size: 11px;
+      letter-spacing: .22em;
+      color: var(--gold);
+      opacity: .7;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    .slide-text .quote {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(20px, 5.5vw, 28px);
+      line-height: 1.5;
+      color: var(--cream);
+      text-shadow: 0 2px 18px rgba(0,0,0,.6);
+    }
+    .slide-text .quote em {
+      color: var(--blush);
+      font-style: normal;
+    }
+
+    /* ── Heading flotante arriba ── */
+    #heading {
+      position: fixed;
+      top: calc(18px + env(safe-area-inset-top, 0px));
+      left: 0; right: 0;
+      text-align: center;
+      font-style: italic;
+      font-size: 13px;
+      letter-spacing: .18em;
+      color: var(--gold);
+      opacity: .7;
+      text-transform: lowercase;
+      z-index: 10;
+      text-shadow: 0 1px 10px rgba(0,0,0,.5);
+    }
+
+    /* ── Nav arrows ── */
+    .nav-btn {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      background: rgba(58,26,34,.55);
+      border: 1px solid rgba(201,169,110,.3);
+      color: var(--gold);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .22s;
+    }
+    .nav-btn:hover, .nav-btn:active { background: rgba(212,96,122,.45); }
+    #prev { left: 12px; }
+    #next { right: 12px; }
+
+    /* ── Dots ── */
+    #dots {
+      position: fixed;
+      bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+      left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 9px;
+      z-index: 10;
+    }
+    .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: rgba(201,169,110,.3);
+      border: 1px solid rgba(201,169,110,.55);
+      cursor: pointer;
+      transition: background .3s, transform .3s;
+    }
+    .dot.active { background: var(--gold); transform: scale(1.45); }
+  </style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<p id="heading">para ti, siempre ✦</p>
+
+<div class="frame">
+
+  <!-- SLIDE 1 -->
+  <div class="slide active">
+    <div class="slide-img bg-1" style="background-image:url('IMG-20251215-WA0039(1).jpg')"></div>
+    <div class="slide-overlay"></div>
+    <div class="slide-text">
+      <p class="number">01 / 07</p>
+      <p class="quote">Cada momento a tu lado es <em>increíblemente hermoso</em>.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 -->
+  <div class="slide">
+    <div class="slide-img bg-2" style="background-image:url('IMG-20260102-WA0030.jpg')"></div>
+    <div class="slide-overlay"></div>
+    <div class="slide-text">
+      <p class="number">02 / 07</p>
+      <p class="quote">Tu sonrisa ilumina cualquier lugar más que <em>todas las estrellas juntas</em>.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 3 -->
+  <div class="slide">
+    <div class="slide-img bg-3" style="background-image:url('IMG-20260103-WA0011.jpg')"></div>
+    <div class="slide-overlay"></div>
+    <div class="slide-text">
+      <p class="number">03 / 07</p>
+      <p class="quote">Contigo aprendí que el amor no se busca, <em>simplemente llega</em>.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 4 -->
+  <div class="slide">
+    <div class="slide-img bg-4" style="background-image:url('IMG-20260105-WA0010.jpg')"></div>
+    <div class="slide-overlay"></div>
+    <div class="slide-text">
+      <p class="number">04 / 07</p>
+      <p class="quote">Eres la parte favorita de <em>todos mis días</em>.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 5 -->
+  <div class="slide">
+    <div class="slide-img bg-5" style="background-image:url('IMG-20260110-WA0044.jpg')"></div>
+    <div class="slide-overlay"></div>
+    <div class="slide-text">
+      <p class="number">05 / 07</p>
+      <p class="quote">En tus ojos encontré el lugar donde <em>siempre quiero estar</em>.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 6 -->
+  <div class="slide">
+    <div class="slide-img bg-6" style="background-image:url('IMG-20260110-WA0050.jpg')"></div>
+    <div class="slide-overlay"></div>
+    <div class="slide-text">
+      <p class="number">06 / 07</p>
+      <p class="quote">Gracias por amarme tal cual soy y por hacerme querer ser <em>mejor cada día</em>.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 7 -->
+  <div class="slide">
+    <div class="slide-img bg-7" style="background-image:url('IMG-20260124-WA0036.jpg')"></div>
+    <div class="slide-overlay"></div>
+    <div class="slide-text">
+      <p class="number">07 / 07</p>
+      <p class="quote">Te elijo hoy, mañana, y <em>todos los días que vengan</em>. Te amo.</p>
+    </div>
+  </div>
+
+</div>
+
+<button class="nav-btn" id="prev">&#8592;</button>
+<button class="nav-btn" id="next">&#8594;</button>
+<div id="dots"></div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+  let current = 0, timer;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => go(i));
+    dotsEl.appendChild(d);
+  });
+
+  function go(n) {
+    slides[current].classList.remove('active');
+    dotsEl.children[current].classList.remove('active');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dotsEl.children[current].classList.add('active');
+    resetTimer();
+  }
+  function resetTimer() {
+    clearInterval(timer);
+    timer = setInterval(() => go(current + 1), 5500);
+  }
+
+  document.getElementById('prev').addEventListener('click', () => go(current - 1));
+  document.getElementById('next').addEventListener('click', () => go(current + 1));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') go(current + 1);
+    if (e.key === 'ArrowLeft')  go(current - 1);
+  });
+  resetTimer();
+
+  /* ── Particles ── */
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  const pColors = ['#d4607a','#c9a96e','#f2c4ce','#ffffff'];
+  let parts = [];
+
+  function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function spawnParticle() {
+    parts.push({
+      x: Math.random() * canvas.width,
+      y: canvas.height + 8,
+      r: Math.random() * 3.5 + 1,
+      speed: Math.random() * 0.55 + 0.2,
+      drift: (Math.random() - .5) * 0.35,
+      opacity: 0,
+      maxOp: Math.random() * 0.4 + 0.12,
+      color: pColors[Math.floor(Math.random() * pColors.length)],
+      grow: true,
+    });
+  }
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    parts.forEach(p => {
+      p.y -= p.speed; p.x += p.drift;
+      p.opacity += p.grow ? 0.011 : -0.005;
+      if (p.opacity >= p.maxOp) p.grow = false;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = Math.max(0, p.opacity);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    parts = parts.filter(p => p.y > -20 && p.opacity > 0);
+  }
+
+  let fr = 0;
+  (function loop() {
+    fr++;
+    if (fr % 8 === 0) spawnParticle();
+    drawParticles();
+    requestAnimationFrame(loop);
+  })();
+
+  /* ── Touch swipe ── */
+  let tx = null;
+  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if (tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) go(current + (dx < 0 ? 1 : -1));
+    tx = null;
+  });
+</script>
+</body>
+</html>
