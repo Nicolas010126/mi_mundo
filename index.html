@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#170b20">
+<title>Mi Mundo 💗</title>
+<style>
+:root{color-scheme:dark;--bg:#100916;--panel:#1c1025;--pink:#ff6fae;--muted:#c9b8cc}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top right,#3a1636 0,#170d20 42%,#0e0914 100%);color:#fff;font-family:system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+header{padding:26px 22px 18px;text-align:center}
+h1{font-size:clamp(2rem,5vw,3.5rem);margin:0;color:#ffd0e5;text-shadow:0 0 24px #ff5da866}
+header p{color:var(--muted);margin:8px 0 0}
+.layout{max-width:1500px;margin:auto;padding:0 18px 22px;display:grid;grid-template-columns:270px minmax(0,1fr);gap:16px;min-height:calc(100vh - 130px)}
+nav,.viewer{background:#1b1023d9;border:1px solid #ffffff18;border-radius:20px;box-shadow:0 15px 45px #0005;overflow:hidden}
+nav{padding:16px;display:flex;flex-direction:column;gap:8px}
+.nav-title{font-size:.78rem;text-transform:uppercase;letter-spacing:.15em;color:#c6a8c7;margin:4px 8px 8px}
+.project{width:100%;text-align:left;border:1px solid transparent;border-radius:12px;padding:11px 12px;background:transparent;color:#f7eaf3;font:inherit;cursor:pointer;transition:.2s}
+.project:hover{background:#ffffff0d;border-color:#ffffff20}
+.project.active{background:linear-gradient(100deg,#b82e73,#773b8f);border-color:#ffb5d6;color:white;box-shadow:0 6px 20px #a72d6b44}
+.project small{display:block;color:#e8c9dc;font-size:.72rem;margin-top:2px}
+.viewer{display:flex;flex-direction:column;min-height:70vh}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid #ffffff18}
+#currentTitle{font-weight:700;color:#ffd3e6}
+.toolbar a{color:#ffb7d6;text-decoration:none;font-size:.9rem}
+iframe{border:0;width:100%;flex:1;min-height:75vh;background:white}
+.welcome{padding:clamp(24px,5vw,60px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:75vh}
+.welcome .heart{font-size:4rem;animation:pulse 1.4s infinite}
+.welcome h2{font-size:clamp(1.5rem,4vw,2.5rem);margin:10px 0;color:#ffd0e5}
+.welcome p{max-width:550px;line-height:1.7;color:var(--muted)}
+.start{margin-top:14px;border:0;border-radius:999px;padding:13px 22px;background:linear-gradient(90deg,#ec579a,#9654c7);color:white;font-weight:700;font-size:1rem;cursor:pointer}
+@keyframes pulse{50%{transform:scale(1.16)}}
+@media(max-width:800px){.layout{grid-template-columns:1fr;min-height:auto}nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.nav-title{grid-column:1/-1}.project{font-size:.88rem;padding:10px}.viewer{min-height:70vh}iframe{min-height:70vh}.toolbar{position:sticky;top:0}}
+@media(max-width:420px){nav{grid-template-columns:1fr 1fr}.project{font-size:.8rem}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Mi Mundo 💗</h1>
+  <p>Un lugar para todos nuestros recuerdos, detalles y proyectos.</p>
+</header>
+<main class="layout">
+  <nav aria-label="Proyectos">
+    <div class="nav-title">Explora Mi Mundo</div>
+    <button class="project" data-src="mensaje-para-pareja/index.html" data-title="Para Ti 💖">💌 Para Ti <small>Un mensaje especial</small></button>
+    <button class="project" data-src="para_el_amor_de_mi_vida/index.html" data-title="Para el amor de mi vida">🌹 Amor de mi vida <small>Una carta de amor</small></button>
+    <button class="project" data-src="Imagenes/index.html" data-title="Nuestro álbum">📸 Nuestro álbum <small>Fotos y puzzle</small></button>
+    <button class="project" data-src="amor_time/index.html" data-title="Nuestro tiempo">⏳ Nuestro tiempo <small>Un contador de amor</small></button>
+    <button class="project" data-src="Coraz-n/index.html" data-title="Corazón de palabras">❤️ Corazón <small>Un corazón hecho de palabras</small></button>
+    <button class="project" data-src="Coraz-n/Index.html" data-title="Corazón de estrellas">✨ Corazón de estrellas <small>Otra versión del corazón</small></button>
+    <button class="project" data-src="sol/index.html" data-title="Sol">☀️ Sol <small>Un detalle especial</small></button>
+    <button class="project" data-src="Todos-/index.html" data-title="Todos">💞 Todos <small>Un recuerdo compartido</small></button>
+    <button class="project" data-src="Am/index.html" data-title="Am">💕 Am <small>Una sorpresa</small></button>
+    <button class="project" data-src="Planner/index.html" data-title="Planner">🗓️ Planner <small>Organiza momentos</small></button>
+    <button class="project" data-src="Razon/index.html" data-title="Razón">💗 Razón <small>Un motivo para sonreír</small></button>
+    <button class="project" data-src="Un_Dia_Cualquiera/index.html" data-title="Un día cualquiera">🌙 Un día cualquiera <small>Un momento especial</small></button>
+  </nav>
+  <section class="viewer">
+    <div class="toolbar">
+      <span id="currentTitle">Bienvenido a Mi Mundo</span>
+      <a id="openTab" href="#" target="_blank" rel="noopener" hidden>Abrir aparte ↗</a>
+    </div>
+    <div class="welcome" id="welcome">
+      <div class="heart">💗</div>
+      <h2>Todo en un solo lugar</h2>
+      <p>Elegí una experiencia del menú para verla aquí mismo. Ya no necesitas buscar cada proyecto por separado: este es el punto de entrada a Mi Mundo.</p>
+      <button class="start" id="startBtn">Entrar a Mi Mundo</button>
+    </div>
+    <iframe id="projectFrame" title="Proyecto seleccionado" hidden></iframe>
+  </section>
+</main>
+<script>
+const buttons=[...document.querySelectorAll('.project')];
+const frame=document.getElementById('projectFrame');
+const welcome=document.getElementById('welcome');
+const title=document.getElementById('currentTitle');
+const openTab=document.getElementById('openTab');
+function openProject(button){
+  const src=button.dataset.src;
+  buttons.forEach(b=>b.classList.toggle('active',b===button));
+  welcome.hidden=true;
+  frame.hidden=false;
+  frame.src=src;
+  frame.title=button.dataset.title;
+  title.textContent=button.dataset.title;
+  openTab.href=src;
+  openTab.hidden=false;
+  history.replaceState(null,'','#'+encodeURIComponent(src));
+}
+buttons.forEach(button=>button.addEventListener('click',()=>openProject(button)));
+document.getElementById('startBtn').addEventListener('click',()=>openProject(buttons[0]));
+const route=decodeURIComponent(location.hash.slice(1));
+if(route){const found=buttons.find(b=>b.dataset.src===route);if(found)openProject(found);}
+</script>
+</body>
+</html>
