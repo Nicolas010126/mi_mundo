@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tu iluminas mi vida 💖</title>
+
+<style>
+body {
+    background: #000;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-image: url("https://www.transparenttextures.com/patterns/noise.png");
+    opacity: 0.04;
+    pointer-events: none;
+}
+#mensaje {
+    text-shadow: 0 0 10px rgba(255,255,255,0.8),
+                 0 0 20px rgba(255,105,180,0.8);
+}
+
+/* CONTENEDOR CIELO */
+#cielo {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* SOL */
+#sol {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, #ffd700, #ff8c00);
+    border-radius: 50%;
+    box-shadow: 0 0 80px #ffd700;
+    cursor: pointer;
+    z-index: 3;
+    animation: latido 2s infinite;
+}
+
+@keyframes latido {
+    0%,100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.1); }
+}
+
+/* ESTRELLAS */
+.estrella {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: parpadeo 2s infinite alternate;
+}
+#mensaje {
+    position: fixed;
+    top: calc(50% + 90px); /* justo debajo del sol */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 28px;
+    color: #9236e9;
+    opacity: 0;
+    transition: opacity 2s;
+    z-index: 4;
+    text-align: center;
+}
+
+@keyframes parpadeo {
+    from { opacity: 0.2; }
+    to { opacity: 1; }
+}
+
+/* ESTRELLAS FUGACES */
+.fugaz {
+    position: absolute;
+    width: 2px;
+    height: 80px;
+    background: linear-gradient(white, transparent);
+    transform: rotate(45deg);
+    animation: caer 5s linear infinite;
+}
+
+@keyframes caer {
+    0% { transform: translate(0,0) rotate(45deg); opacity:0; }
+    10% { opacity:1; }
+    100% { transform: translate(-300px,300px) rotate(45deg); opacity:0; }
+}
+
+/* NOMBRE */
+#nombre {
+    position: fixed;
+    top: 20%;
+    width: 100%;
+    text-align: center;
+    font-size: 50px;
+    color: #9236e9;
+    opacity: 0;
+    transition: opacity 2s;
+    z-index: 4;
+}
+
+/* NUBES */
+.nube {
+    position: fixed;
+    width: 180px;
+    height: 80px;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), rgba(255,255,255,0.1) 70%);
+    border-radius: 50%;
+    filter: blur(8px);
+    opacity: 0.4;
+    z-index: 2;
+}
+.nube::before,
+.nube::after {
+    content: "";
+    position: absolute;
+    background: inherit;
+    width: 60%;
+    height: 60%;
+    top: -20px;
+    left: 20px;
+    border-radius: 50%;
+}
+
+@keyframes moverNube {
+    from { transform: translateX(-250px); }
+    to { transform: translateX(120vw); }
+}
+
+/* FRASES */
+.frase {
+    position: fixed;
+    color: rgb(0, 0, 0);
+    opacity: 0;
+    animation: flotar linear infinite;
+    z-index: 5;
+
+    transform: translateX(-50%);
+    text-align: center;
+    white-space: nowrap;
+}
+
+@keyframes flotar {
+    0% { transform: translateY(100vh); opacity: 0; }
+    20% { opacity: 1; }
+    100% { transform: translateY(-10vh); opacity: 0; }
+}
+
+/* FONDO FINAL (SIN BLANCO) */
+.iluminado {
+    background: #87ceeb; /* cielo limpio sin degradado */
+}
+</style>
+</head>
+
+<body>
+
+<div id="cielo"></div>
+<div id="sol"></div>
+<div id="nombre">Ignacia 💖</div>
+<div id="mensaje">Te Amo Mucho Preciosa Mía 💖</div>
+
+<script>
+const cielo = document.getElementById("cielo");
+
+// estrellas
+for (let i = 0; i < 120; i++) {
+    let e = document.createElement("div");
+    e.className = "estrella";
+    e.style.top = Math.random() * 100 + "vh";
+    e.style.left = Math.random() * 100 + "vw";
+    cielo.appendChild(e);
+}
+
+// fugaces
+for (let i = 0; i < 3; i++) {
+    let f = document.createElement("div");
+    f.className = "fugaz";
+    f.style.top = Math.random() * 50 + "vh";
+    f.style.left = Math.random() * 100 + "vw";
+    f.style.animationDelay = Math.random() * 5 + "s";
+    cielo.appendChild(f);
+}
+
+const frases = [
+"Eres esa persona que ilumina mis días más oscuros ☀️",
+"Desde el primer día que te vi iluminaste mis ojos y mi alma 💖",
+"El brillo de tus ojos es lo más lindo que existe en este universo ✨",
+"Eres mi luz en cada momento difícil 🌟",
+"Contigo todo tiene más color 🌈",
+"Tu sonrisa ilumina mi mundo 💫",
+"Eres mi sol en los días nublados ☁️☀️",
+"Tu amor es mi energía diaria ⚡",
+"No hay oscuridad cuando estás tú 💛"
+];
+
+let activado = false;
+
+document.getElementById("sol").onclick = function() {
+
+    if (activado) return;
+    activado = true;
+
+    document.body.classList.add("iluminado");
+
+
+    // ocultar cielo oscuro
+    cielo.style.opacity = "0";
+    cielo.style.transition = "opacity 2s";
+
+    // mostrar nombre
+    document.getElementById("nombre").style.opacity = 1;
+        document.getElementById("mensaje").style.opacity = 1;
+
+    // nubes
+for (let i = 0; i < 6; i++) {
+    let nube = document.createElement("div");
+    nube.className = "nube";
+
+    let size = 120 + Math.random() * 120;
+
+    nube.style.width = size + "px";
+    nube.style.height = size * 0.5 + "px";
+
+    nube.style.top = Math.random() * 60 + "vh";
+
+    nube.style.opacity = 0.2 + Math.random() * 0.3;
+
+    nube.style.animation = `moverNube ${40 + Math.random()*40}s linear infinite`;
+
+    document.body.appendChild(nube);
+}
+
+    // frases
+for (let i = 0; i < 10; i++) {
+    let f = document.createElement("div");
+    f.className = "frase";
+    f.innerText = frases[Math.floor(Math.random()*frases.length)];
+
+    // posición horizontal controlada (sin bordes)
+    f.style.left = (10 + Math.random() * 80) + "vw";
+
+    // velocidad variada
+    f.style.animationDuration = (8 + Math.random()*6) + "s";
+
+    // aparecen en distintos momentos
+    f.style.animationDelay = (i * 2) + "s";
+
+    document.body.appendChild(f);
+}
+}
+</script>
+
+</body>
+</html>

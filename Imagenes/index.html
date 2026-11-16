@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Para Ignacia 💖</title>
+
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    background:#111;
+    font-family:Arial;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    flex-direction:column;
+}
+
+/* FONDO */
+#fondo{
+    position:fixed;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    z-index:-1;
+}
+
+.foto{
+    position:absolute;
+    background-size:cover;
+    background-position:center;
+    border-radius:10px;
+    opacity:0.5;
+    animation:flotar linear infinite;
+}
+
+@keyframes flotar{
+    0%{transform:translateY(110vh); opacity:0;}
+    50%{opacity:0.6;}
+    100%{transform:translateY(-10vh); opacity:0;}
+}
+
+/* PUZZLE */
+h1{ color:#ff69b4; margin:5px;}
+h2{ margin-bottom:15px; }
+
+#puzzle{
+    width:400px;
+    height:400px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:2px;
+}
+
+.piece{
+    background-image:url('ignacia.jpg');
+    background-size:400px 400px;
+    cursor:pointer;
+}
+
+/* MENSAJE CENTRAL */
+#mensaje{
+    display:none !important; /* oculto al inicio */
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background: rgba(0,0,0,0.8);
+    padding:20px;
+    border-radius:10px;
+    text-align:center;
+    color:#ffb6c1;
+    max-width:320px;
+    z-index:10;
+}
+
+/* BOTON SORPRESA */
+#btnCarta{
+    margin-top:15px;
+    padding:10px 20px;
+    background:#ff69b4;
+    border:none;
+    color:white;
+    border-radius:10px;
+    display:none;
+    cursor:pointer;
+}
+
+/* CARTA */
+#carta{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.9);
+    display:none;
+    justify-content:center;
+    align-items:center;
+}
+
+#contenidoCarta{
+    background:#222;
+    padding:20px;
+    border-radius:15px;
+    max-width:300px;
+    text-align:center;
+    animation:fadeIn 1s;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:scale(0.8);}
+    to{opacity:1; transform:scale(1);}
+}
+
+/* CORAZONES */
+.heart{
+    position:absolute;
+    animation:fall linear infinite;
+}
+
+@keyframes fall{
+    0%{transform:translateY(-10vh); opacity:1;}
+    100%{transform:translateY(110vh); opacity:0;}
+}
+
+/* ANIMACIÓN MENSAJE */
+#mensaje.show{
+    animation:fadeInMensaje 1s forwards;
+}
+
+@keyframes fadeInMensaje{
+    from{opacity:0; transform:translate(-50%,-60%) scale(0.8);}
+    to{opacity:1; transform:translate(-50%,-50%) scale(1);}
+}
+</style>
+</head>
+
+<body>
+
+<h1>Para Ignacia 💖</h1>
+<h2>Arma el puzzle amor 🧩</h2>
+
+<div id="puzzle"></div>
+
+<div id="mensaje"></div> <!-- VACÍO al inicio -->
+
+<button id="btnCarta">Abrir sorpresa 💌</button>
+
+<div id="carta">
+    <div id="contenidoCarta">
+        <h2>Para ti 💖</h2>
+        <p>
+        Amor mio amo cada parte, cada faceta, cada momento a tu lado que cuando no estoy contigo lo unico que hago es recordar esos momentos bellos a tu lado y pensar en que detalle puedo hacerle a mi princesa.<br><br>
+        <b>Te Amo Mucho 💖</b>
+        </p>
+    </div>
+</div>
+
+<div id="fondo"></div>
+
+<audio autoplay loop>
+    <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+/* ===== FONDO ===== */
+const fondo = document.getElementById("fondo");
+let imagenes = ["1.jpg","2.jpg","3.jpg","4.jpg","5.jpg","6.jpg","7.jpg","8.jpg","9.jpg","10.jpg","11.jpg","12.jpg","13.jpg","14.jpg","15.jpg","16.jpg","17.jpg","18.jpg","19.jpg"];
+
+for(let i=0;i<60;i++){
+    let div = document.createElement("div");
+    div.className="foto";
+    let img = imagenes[Math.floor(Math.random()*imagenes.length)];
+    div.style.backgroundImage=`url(${img})`;
+    div.style.left=Math.random()*100+"vw";
+    let size=50+Math.random()*70;
+    div.style.width=size+"px";
+    div.style.height=size+"px";
+    div.style.animationDuration=(12+Math.random()*15)+"s";
+    div.style.animationDelay=Math.random()*10+"s";
+    fondo.appendChild(div);
+}
+
+/* ===== PUZZLE 4x4 ===== */
+const puzzle = document.getElementById("puzzle");
+const mensaje = document.getElementById("mensaje");
+const btn = document.getElementById("btnCarta");
+const carta = document.getElementById("carta");
+
+let correct = [];
+for(let y=0; y<4; y++){
+    for(let x=0; x<4; x++){
+        correct.push(`${x*33.33}% ${y*33.33}%`);
+    }
+}
+
+let current = [...correct].sort(()=>Math.random()-0.5);
+let selected=null;
+let won=false;
+
+function render(){
+    puzzle.innerHTML="";
+    current.forEach((pos,i)=>{
+        let d=document.createElement("div");
+        d.className="piece";
+        d.style.backgroundPosition=pos;
+        d.onclick=()=>{
+            if(selected==null){
+                selected=i;
+                d.style.border="2px solid pink";
+            }else{
+                [current[selected],current[i]]=[current[i],current[selected]];
+                selected=null;
+                render();
+                check();
+            }
+        };
+        puzzle.appendChild(d);
+    });
+}
+
+function check(){
+    if(!won && JSON.stringify(current)==JSON.stringify(correct)){
+        won=true;
+        mensaje.innerHTML = `
+        Amor mio amo cada parte, cada faceta, cada momento a tu lado que cuando no estoy contigo lo unico que hago es recordar esos momentos bellos a tu lado y pensar en que detalle puedo hacerle a mi princesa.<br><br>
+        <b>Te Amo Mucho 💖</b>
+        `;
+        mensaje.style.display="block";
+        mensaje.classList.add("show");
+        btn.style.display="block";
+        corazones();
+    }
+}
+
+/* ===== CORAZONES MÁS SUAVES ===== */
+function corazones(){
+    for(let i=0;i<50;i++){
+        let h=document.createElement("div");
+        h.className="heart";
+        h.innerHTML="💖";
+        h.style.left=Math.random()*100+"vw";
+        h.style.animationDuration=(5+Math.random()*5)+"s";
+        h.style.fontSize=(15+Math.random()*25)+"px";
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(),8000);
+    }
+}
+
+/* ===== CARTA ===== */
+btn.onclick=()=>{ carta.style.display="flex"; }
+carta.onclick=()=>{ carta.style.display="none"; }
+
+render();
+</script>
+
+</body>
+</html>

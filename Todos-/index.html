@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Para Ignacia 💖</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --rose:#d4607a; --blush:#f2c4ce; --cream:#fdf6f0; --deep:#3a1a22; --gold:#c9a96e;
+    }
+    html, body { width:100%; height:100%; overflow:hidden; background:#000; }
+
+    /* NAV */
+    #main-nav {
+      position:fixed; bottom:0; left:0; right:0; z-index:9999;
+      display:flex; justify-content:center; gap:4px;
+      padding:8px 6px calc(8px + env(safe-area-inset-bottom,0px));
+      background:rgba(0,0,0,.65); backdrop-filter:blur(10px);
+    }
+    .nav-tab {
+      flex:1; max-width:80px; padding:6px 2px;
+      border:1px solid rgba(201,169,110,.35); border-radius:8px;
+      background:rgba(58,26,34,.5); color:var(--gold);
+      font-size:10px; text-align:center; cursor:pointer;
+      transition:background .25s, transform .18s;
+      font-family:'Cormorant Garamond',serif; line-height:1.3;
+      -webkit-tap-highlight-color:transparent; user-select:none;
+    }
+    .nav-tab .icon { font-size:16px; display:block; }
+    .nav-tab.active { background:rgba(212,96,122,.6); border-color:var(--rose); transform:translateY(-3px); }
+
+    /* SECCIONES — todas visibles en DOM, solo ocultamos con pointer-events+opacity */
+    .section {
+      position:fixed; inset:0;
+      opacity:0; pointer-events:none;
+      transition:opacity .4s;
+      overflow:hidden;
+    }
+    .section.active { opacity:1; pointer-events:auto; }
+
+    /* ═══ SEC 1 – GALERÍA ═══ */
+    #sec1 { background:var(--deep); font-family:'Cormorant Garamond',serif; }
+    #s1-particles { position:absolute; inset:0; pointer-events:none; z-index:0; }
+    .s1-frame { position:absolute; inset:0; z-index:1; overflow:hidden; }
+    .s1-frame::before { content:''; position:absolute; inset:14px; border:1px solid rgba(201,169,110,.22); border-radius:2px; z-index:3; pointer-events:none; }
+    .s1-slide { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; opacity:0; transition:opacity .9s; pointer-events:none; }
+    .s1-slide.active { opacity:1; pointer-events:auto; }
+    .s1-img { position:absolute; inset:0; background-size:cover; background-position:center; transform:scale(1.06); transition:transform 6s; }
+    .s1-slide.active .s1-img { transform:scale(1); }
+    .bg-1{background-color:#6b2737;} .bg-2{background-color:#1a3a4a;} .bg-3{background-color:#3a2a10;}
+    .bg-4{background-color:#2a1040;} .bg-5{background-color:#0d2e1a;} .bg-6{background-color:#3a1520;} .bg-7{background-color:#1a2a40;}
+    .s1-overlay { position:absolute; inset:0; z-index:2; background:linear-gradient(to bottom,rgba(10,2,6,0) 0%,rgba(10,2,6,0) 35%,rgba(10,2,6,.65) 65%,rgba(10,2,6,.93) 100%); }
+    .s1-text { position:relative; z-index:4; width:100%; padding:0 28px calc(108px + env(safe-area-inset-bottom,0px)) 28px; }
+    .s1-text .number { font-size:11px; letter-spacing:.22em; color:var(--gold); opacity:.7; margin-bottom:10px; text-transform:uppercase; }
+    .s1-text .quote { font-family:'Playfair Display',serif; font-style:italic; font-size:clamp(20px,5.5vw,28px); line-height:1.5; color:var(--cream); text-shadow:0 2px 18px rgba(0,0,0,.6); }
+    .s1-text .quote em { color:var(--blush); font-style:normal; }
+    #s1-heading { position:absolute; top:calc(18px + env(safe-area-inset-top,0px)); left:0; right:0; text-align:center; font-style:italic; font-size:13px; letter-spacing:.18em; color:var(--gold); opacity:.7; text-transform:lowercase; z-index:10; text-shadow:0 1px 10px rgba(0,0,0,.5); }
+    .s1-nav { position:absolute; top:50%; transform:translateY(-50%); z-index:10; background:rgba(58,26,34,.55); border:1px solid rgba(201,169,110,.3); color:var(--gold); width:44px; height:44px; border-radius:50%; cursor:pointer; font-size:17px; display:flex; align-items:center; justify-content:center; transition:background .22s; -webkit-tap-highlight-color:transparent; }
+    .s1-nav:active { background:rgba(212,96,122,.55); }
+    #s1-prev { left:12px; } #s1-next { right:12px; }
+    #s1-dots { position:absolute; bottom:calc(72px + env(safe-area-inset-bottom,0px)); left:0; right:0; display:flex; justify-content:center; gap:9px; z-index:10; }
+    .s1-dot { width:7px; height:7px; border-radius:50%; background:rgba(201,169,110,.3); border:1px solid rgba(201,169,110,.55); cursor:pointer; transition:background .3s,transform .3s; }
+    .s1-dot.active { background:var(--gold); transform:scale(1.45); }
+
+    /* ═══ SEC 2 – CORAZÓN ═══ */
+    #sec2 { background:radial-gradient(circle at top,#1a001a,#000); font-family:Arial,sans-serif; }
+    #s2-heart { position:absolute; top:45%; left:50%; transform:translate(-50%,-50%); width:100%; height:100%; }
+    .s2-latir { animation:s2latido 2s infinite; }
+    @keyframes s2latido { 0%{transform:translate(-50%,-50%) scale(1);} 50%{transform:translate(-50%,-50%) scale(1.05);} 100%{transform:translate(-50%,-50%) scale(1);} }
+    .s2-text { position:absolute; font-size:12px; white-space:nowrap; opacity:0; transform:scale(0.5); transition:all .3s ease; }
+    .s2-text.show { opacity:1; transform:scale(1); }
+    .s2-color { animation:s2glow 3s infinite alternate; }
+    @keyframes s2glow { 0%{color:#ff4da6;text-shadow:0 0 5px #ff4da6,0 0 10px #ff4da6;} 50%{color:#ff99cc;text-shadow:0 0 10px #ff99cc,0 0 20px #ff99cc;} 100%{color:#ff4da6;text-shadow:0 0 5px #ff4da6,0 0 15px #ff4da6;} }
+    #s2-mensaje { position:absolute; bottom:calc(88px + env(safe-area-inset-bottom,0px)); width:100%; text-align:center; color:white; font-size:15px; opacity:0; transition:opacity 2s; padding:0 20px; }
+    .s2-emoji { position:absolute; pointer-events:none; animation:s2fall linear infinite; }
+    @keyframes s2fall { 0%{opacity:1;} 100%{transform:translateY(110vh);opacity:0;} }
+
+    /* ═══ SEC 3 – CARTA ═══ */
+    #sec3 { background:linear-gradient(to right,#f78dee,#ac2d42); font-family:Arial,sans-serif; overflow-y:auto; padding-bottom:calc(70px + env(safe-area-inset-bottom,0px)); }
+    #sec3-inner { text-align:center; padding:50px 30px 20px; color:#333; position:relative; min-height:100%; }
+    #sec3 h1 { color:#7e1adb; font-size:clamp(1.4em,5vw,2.8em); position:relative; z-index:2; }
+    #sec3 p { font-size:clamp(.95em,3.5vw,1.4em); margin-top:10px; position:relative; z-index:2; }
+    #sec3 h2 { font-size:clamp(1em,4vw,1.5em); margin-top:20px; position:relative; z-index:2; }
+    .s3-heart { font-size:4em; animation:s3beat 1s infinite; color:#ff0033; display:inline-block; margin-top:15px; position:relative; z-index:2; }
+    @keyframes s3beat { 0%,100%{transform:scale(1);} 50%{transform:scale(1.3);} }
+    .s3-bg { position:absolute; color:rgba(126,26,219,.2); pointer-events:none; user-select:none; z-index:1; }
+
+    /* ═══ SEC 4 – SOL ═══ */
+    #sec4 { background:#000; }
+    #s4-cielo { position:absolute; inset:0; z-index:1; overflow:hidden; }
+    #s4-sol {
+      position:absolute; top:50%; left:50%;
+      transform:translate(-50%,-60%);
+      width:120px; height:120px;
+      background:radial-gradient(circle,#ffd700,#ff8c00);
+      border-radius:50%; box-shadow:0 0 80px #ffd700;
+      cursor:pointer; z-index:10;
+      animation:s4pulse 2s infinite;
+      -webkit-tap-highlight-color:transparent;
+      touch-action:manipulation;
+    }
+    @keyframes s4pulse { 0%,100%{transform:translate(-50%,-60%) scale(1);} 50%{transform:translate(-50%,-60%) scale(1.1);} }
+    .s4-star { position:absolute; width:2px; height:2px; background:white; border-radius:50%; animation:s4blink 2s infinite alternate; }
+    @keyframes s4blink { from{opacity:.2;} to{opacity:1;} }
+    .s4-shooting { position:absolute; width:2px; height:80px; background:linear-gradient(white,transparent); animation:s4shoot 5s linear infinite; }
+    @keyframes s4shoot { 0%{transform:translate(0,0) rotate(45deg);opacity:0;} 10%{opacity:1;} 100%{transform:translate(-300px,300px) rotate(45deg);opacity:0;} }
+    #s4-nombre { position:absolute; top:15%; width:100%; text-align:center; font-size:clamp(30px,8vw,50px); color:#7e1adb; opacity:0; transition:opacity 2s; z-index:6; font-family:'Cormorant Garamond',serif; }
+    #s4-mensaje { position:absolute; top:58%; left:50%; transform:translateX(-50%); font-size:clamp(15px,4vw,26px); color:#7e1adb; opacity:0; transition:opacity 2s; z-index:6; text-align:center; text-shadow:0 0 12px rgba(255,255,255,.9); font-family:'Cormorant Garamond',serif; width:90%; }
+    .s4-cloud { position:absolute; border-radius:50%; filter:blur(8px); z-index:3; }
+    .s4-phrase { position:absolute; color:#1a0040; opacity:0; animation:s4rise linear infinite; z-index:7; text-align:center; white-space:nowrap; font-size:clamp(11px,2.5vw,15px); font-family:'Cormorant Garamond',serif; }
+    @keyframes s4rise { 0%{transform:translate(-50%,100vh);opacity:0;} 20%{opacity:1;} 100%{transform:translate(-50%,-200px);opacity:0;} }
+    .s4-day { background:#87ceeb !important; }
+    #s4-hint { position:absolute; bottom:calc(80px + env(safe-area-inset-bottom,0px)); width:100%; text-align:center; color:rgba(255,215,0,.9); font-size:15px; z-index:11; animation:s4blink 1.5s infinite alternate; font-family:'Cormorant Garamond',serif; letter-spacing:.12em; pointer-events:none; }
+    @keyframes moverNube { from{transform:translateX(-300px);} to{transform:translateX(120vw);} }
+
+    /* ═══ SEC 5 – CONTADOR ═══ */
+    #sec5 { background:#000; font-family:Arial,sans-serif; }
+    #s5-collage { position:absolute; inset:0; z-index:1; overflow:hidden; }
+    #s5-collage img { position:absolute; width:150px; height:150px; object-fit:cover; opacity:.3; }
+    #s5-title { position:absolute; top:20px; width:100%; text-align:center; font-size:clamp(1.5em,5vw,3em); color:#fff; text-shadow:2px 2px #ff6f91; z-index:10; pointer-events:none; }
+    #s5-contador { position:absolute; top:calc(20px + 4em); width:100%; text-align:center; font-size:clamp(1em,4vw,2em); color:#fff; z-index:10; pointer-events:none; }
+    #s5-texto { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:clamp(1.2em,4vw,3em); color:#ff6f91; text-shadow:2px 2px #fff; z-index:10; pointer-events:none; text-align:center; width:90%; }
+    .s5-msg { position:absolute; background:rgba(255,111,145,.85); padding:8px 16px; border-radius:20px; font-size:clamp(.9em,3vw,1.4em); opacity:0; animation:s5in 1s forwards, s5out 3s forwards 1s; pointer-events:none; z-index:12; color:#fff; }
+    @keyframes s5in { 0%{opacity:0;transform:scale(.5);} 100%{opacity:1;transform:scale(1);} }
+    @keyframes s5out { 0%{opacity:1;} 100%{opacity:0;} }
+    .s5-heart { position:absolute; pointer-events:none; animation:s5fall linear forwards; z-index:8; }
+    @keyframes s5fall { 0%{transform:translateY(-50px) rotate(0deg);opacity:1;} 100%{transform:translateY(100vh) rotate(360deg);opacity:0;} }
+    .s5-float { position:absolute; animation:s5up 6s linear forwards; pointer-events:none; z-index:8; }
+    @keyframes s5up { 0%{transform:translateY(100vh);opacity:0;} 50%{opacity:1;} 100%{transform:translateY(-50px);opacity:0;} }
+
+    /* ═══ SEC 6 – PUZZLE ═══ */
+    #sec6 { background:#111; font-family:Arial,sans-serif; color:white; display:flex; justify-content:center; align-items:center; flex-direction:column; }
+    #s6-fondo { position:absolute; inset:0; z-index:0; overflow:hidden; }
+    .s6-foto { position:absolute; background-size:cover; background-position:center; border-radius:10px; opacity:.45; animation:s6up linear infinite; }
+    @keyframes s6up { 0%{transform:translateY(110vh);opacity:0;} 50%{opacity:.55;} 100%{transform:translateY(-10vh);opacity:0;} }
+    #s6-wrap { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; padding-bottom:calc(68px + env(safe-area-inset-bottom,0px)); }
+    #s6-wrap h1 { color:#ff69b4; margin:5px; font-size:clamp(1.1em,4vw,2em); }
+    #s6-wrap h2 { margin-bottom:8px; font-size:clamp(.9em,3vw,1.4em); }
+    #s6-puzzle { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; }
+    .s6-piece { background-image:url('ignacia.jpg'); background-size:400% 400%; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+    .s6-piece.sel { outline:3px solid #ff69b4; }
+    #s6-msg { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,.85); padding:20px; border-radius:12px; text-align:center; color:#ffb6c1; max-width:90vw; z-index:20; font-size:clamp(.9em,3vw,1.1em); }
+    #s6-btnCarta { margin-top:12px; padding:10px 20px; background:#ff69b4; border:none; color:white; border-radius:10px; display:none; cursor:pointer; font-size:1em; -webkit-tap-highlight-color:transparent; }
+    #s6-carta { display:none; position:fixed; inset:0; background:rgba(0,0,0,.9); justify-content:center; align-items:center; z-index:25; }
+    #s6-carta.open { display:flex; }
+    #s6-cartaBox { background:#222; padding:22px; border-radius:15px; max-width:300px; text-align:center; animation:s6in 1s; }
+    @keyframes s6in { from{opacity:0;transform:scale(.8);} to{opacity:1;transform:scale(1);} }
+    .s6-hfall { position:absolute; pointer-events:none; animation:s6hfall linear infinite; }
+    @keyframes s6hfall { 0%{transform:translateY(-10vh);opacity:1;} 100%{transform:translateY(110vh);opacity:0;} }
+  </style>
+</head>
+<body>
+
+<!-- ═══ SEC 1 – GALERÍA ═══ -->
+<div id="sec1" class="section active">
+  <canvas id="s1-particles"></canvas>
+  <p id="s1-heading">para ti, siempre ✦</p>
+  <div class="s1-frame">
+    <div class="s1-slide active">
+      <div class="s1-img bg-1" style="background-image:url('IMG-20251215-WA0039(1).jpg')"></div>
+      <div class="s1-overlay"></div>
+      <div class="s1-text"><p class="number">01 / 07</p><p class="quote">Cada momento a tu lado es <em>increíblemente hermoso</em>.</p></div>
+    </div>
+    <div class="s1-slide">
+      <div class="s1-img bg-2" style="background-image:url('IMG-20260102-WA0030.jpg')"></div>
+      <div class="s1-overlay"></div>
+      <div class="s1-text"><p class="number">02 / 07</p><p class="quote">Tu sonrisa ilumina cualquier lugar más que <em>todas las estrellas juntas</em>.</p></div>
+    </div>
+    <div class="s1-slide">
+      <div class="s1-img bg-3" style="background-image:url('IMG-20260103-WA0011.jpg')"></div>
+      <div class="s1-overlay"></div>
+      <div class="s1-text"><p class="number">03 / 07</p><p class="quote">Contigo aprendí que el amor no se busca, <em>simplemente llega</em>.</p></div>
+    </div>
+    <div class="s1-slide">
+      <div class="s1-img bg-4" style="background-image:url('IMG-20260105-WA0010.jpg')"></div>
+      <div class="s1-overlay"></div>
+      <div class="s1-text"><p class="number">04 / 07</p><p class="quote">Eres la parte favorita de <em>todos mis días</em>.</p></div>
+    </div>
+    <div class="s1-slide">
+      <div class="s1-img bg-5" style="background-image:url('IMG-20260110-WA0044.jpg')"></div>
+      <div class="s1-overlay"></div>
+      <div class="s1-text"><p class="number">05 / 07</p><p class="quote">En tus ojos encontré el lugar donde <em>siempre quiero estar</em>.</p></div>
+    </div>
+    <div class="s1-slide">
+      <div class="s1-img bg-6" style="background-image:url('IMG-20260110-WA0050.jpg')"></div>
+      <div class="s1-overlay"></div>
+      <div class="s1-text"><p class="number">06 / 07</p><p class="quote">Gracias por amarme tal cual soy y por hacerme querer ser <em>mejor cada día</em>.</p></div>
+    </div>
+    <div class="s1-slide">
+      <div class="s1-img bg-7" style="background-image:url('IMG-20260124-WA0036.jpg')"></div>
+      <div class="s1-overlay"></div>
+      <div class="s1-text"><p class="number">07 / 07</p><p class="quote">Te elijo hoy, mañana, y <em>todos los días que vengan</em>. Te amo.</p></div>
+    </div>
+  </div>
+  <button class="s1-nav" id="s1-prev">&#8592;</button>
+  <button class="s1-nav" id="s1-next">&#8594;</button>
+  <div id="s1-dots"></div>
+</div>
+
+<!-- ═══ SEC 2 – CORAZÓN ═══ -->
+<div id="sec2" class="section">
+  <div id="s2-heart"></div>
+  <div id="s2-mensaje">
+    Amor mio amo cada parte, cada faceta, cada momento a tu lado 💖<br>
+    Cuando no estoy contigo solo pienso en ti y en hacerte feliz 🌹<br>
+    <b>Te Amo Mucho Ignacia 💕</b>
+  </div>
+</div>
+
+<!-- ═══ SEC 3 – CARTA ═══ -->
+<div id="sec3" class="section">
+  <div id="sec3-inner">
+    <h1>💖 Para la Mujer Más Hermosa Del Universo 💖</h1>
+    <p>Quería recordarte lo especial que eres para mí,</p>
+    <p>que aunque a veces no te lo digo tanto como me gustaría,</p>
+    <p>quiero que sepas que te amo y te amaré por siempre.</p>
+    <p>Me gustaría poder apoyarte más y hacer que te sientas mejor</p>
+    <p>pero no sé cómo reaccionar a momentos así, aunque lo intento.</p>
+    <p>Pero por ti soy capaz de lo que sea.</p>
+    <p>Dame tiempo para hacerlo — no será de la noche a la mañana,</p>
+    <p>pero así será, amor.</p>
+    <div class="s3-heart">❤️</div>
+    <p>Cada segundo que pasa me enamoro más de ti.</p>
+    <p>Eres tan increíble que no sé cómo te fijaste en mí,</p>
+    <p>pero le doy gracias a Dios que así fue,</p>
+    <p>porque es lo más bello que me ha pasado en toda mi vida.</p>
+    <p>Espero que nunca te aburras de mí porque no quiero perderte jamás.</p>
+    <p>Eres lo más preciado que tengo,</p>
+    <p>me refiero a perder tu hermosa compañía que me encanta.</p>
+    <p>Si por mí fuera pasaría todo el tiempo contigo.</p>
+    <div class="s3-heart">❤️</div>
+    <p>Esto es para recordarte lo mucho que te amo, mi amor.</p>
+    <p>Espero poder estar contigo para siempre</p>
+    <p>y formar una hermosa familia contigo, mi niña hermosa.</p>
+    <div class="s3-heart">❤️</div>
+    <h2>💖 TE AMO CON TODO MI SER IGNACIA 💖</h2>
+  </div>
+</div>
+
+<!-- ═══ SEC 4 – SOL ═══ -->
+<div id="sec4" class="section">
+  <div id="s4-cielo"></div>
+  <div id="s4-sol"></div>
+  <div id="s4-nombre">Ignacia 💖</div>
+  <div id="s4-mensaje">Te Amo Mucho Preciosa Mía 💖</div>
+  <p id="s4-hint">✨ Toca el sol ✨</p>
+</div>
+
+<!-- ═══ SEC 5 – CONTADOR ═══ -->
+<div id="sec5" class="section">
+  <div id="s5-collage"></div>
+  <h1 id="s5-title">💖 Nuestro Amor 💖</h1>
+  <div id="s5-contador"></div>
+  <div id="s5-texto">Te amaré por siempre 💕<br><small style="font-size:.5em;opacity:.7">Toca la pantalla 💕</small></div>
+</div>
+
+<!-- ═══ SEC 6 – PUZZLE ═══ -->
+<div id="sec6" class="section">
+  <div id="s6-fondo"></div>
+  <div id="s6-wrap">
+    <h1>Para Ignacia 💖</h1>
+    <h2>Arma el puzzle amor 🧩</h2>
+    <div id="s6-puzzle"></div>
+  </div>
+  <div id="s6-msg"></div>
+  <button id="s6-btnCarta">Abrir sorpresa 💌</button>
+  <div id="s6-carta">
+    <div id="s6-cartaBox">
+      <h2>Para ti 💖</h2>
+      <p>Amor mio amo cada parte, cada faceta, cada momento a tu lado que cuando no estoy contigo lo único que hago es recordar esos momentos bellos a tu lado y pensar en qué detalle puedo hacerle a mi princesa.<br><br><b>Te Amo Mucho 💖</b></p>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-tab active"  data-sec="1"><span class="icon">📸</span>Fotos</div>
+  <div class="nav-tab" data-sec="2"><span class="icon">💖</span>Corazón</div>
+  <div class="nav-tab" data-sec="3"><span class="icon">💌</span>Carta</div>
+  <div class="nav-tab" data-sec="4"><span class="icon">☀️</span>Sol</div>
+  <div class="nav-tab" data-sec="5"><span class="icon">⏱️</span>Tiempo</div>
+  <div class="nav-tab" data-sec="6"><span class="icon">🧩</span>Puzzle</div>
+</nav>
+
+<script>
+/* ══════════════════════════════════
+   NAVEGACIÓN
+══════════════════════════════════ */
+let currentSec = 1;
+const built = {};
+
+function showSection(n) {
+  document.getElementById('sec' + currentSec).classList.remove('active');
+  document.querySelector('.nav-tab[data-sec="' + currentSec + '"]').classList.remove('active');
+  currentSec = n;
+  document.getElementById('sec' + n).classList.add('active');
+  document.querySelector('.nav-tab[data-sec="' + n + '"]').classList.add('active');
+  if (!built[n]) { builders[n] && builders[n](); built[n] = true; }
+}
+
+document.querySelectorAll('.nav-tab').forEach(t => {
+  t.addEventListener('click', () => showSection(+t.dataset.sec));
+});
+
+/* ══════════════════════════════════
+   SEC 1 – GALERÍA
+══════════════════════════════════ */
+(function() {
+  const slides = document.querySelectorAll('.s1-slide');
+  const dotsEl = document.getElementById('s1-dots');
+  let cur = 0, timer;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 's1-dot' + (i===0?' active':'');
+    d.addEventListener('click', () => { if(currentSec===1) go(i); });
+    dotsEl.appendChild(d);
+  });
+
+  function go(n) {
+    slides[cur].classList.remove('active');
+    dotsEl.children[cur].classList.remove('active');
+    cur = (n + slides.length) % slides.length;
+    slides[cur].classList.add('active');
+    dotsEl.children[cur].classList.add('active');
+    reset();
+  }
+  function reset() { clearInterval(timer); timer = setInterval(() => go(cur+1), 5500); }
+
+  document.getElementById('s1-prev').addEventListener('click', () => { if(currentSec===1) go(cur-1); });
+  document.getElementById('s1-next').addEventListener('click', () => { if(currentSec===1) go(cur+1); });
+
+  let tx = null;
+  document.getElementById('sec1').addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
+  document.getElementById('sec1').addEventListener('touchend', e => {
+    if (tx===null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) go(cur + (dx<0?1:-1));
+    tx = null;
+  });
+
+  reset();
+
+  // Partículas
+  const canvas = document.getElementById('s1-particles');
+  const ctx = canvas.getContext('2d');
+  const pColors = ['#d4607a','#c9a96e','#f2c4ce','#fff'];
+  let parts = [];
+  function resize() { canvas.width=innerWidth; canvas.height=innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+  function spawn() { parts.push({x:Math.random()*canvas.width, y:canvas.height+8, r:Math.random()*3+1, speed:Math.random()*.5+.2, drift:(Math.random()-.5)*.3, op:0, maxOp:Math.random()*.4+.1, color:pColors[Math.floor(Math.random()*4)], grow:true}); }
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    parts.forEach(p => { p.y-=p.speed; p.x+=p.drift; p.op+=p.grow?.011:-.005; if(p.op>=p.maxOp)p.grow=false; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=p.color; ctx.globalAlpha=Math.max(0,p.op); ctx.fill(); });
+    ctx.globalAlpha=1;
+    parts = parts.filter(p=>p.y>-20&&p.op>0);
+  }
+  let fr=0; (function loop(){ fr++; if(fr%8===0)spawn(); draw(); requestAnimationFrame(loop); })();
+})();
+
+/* ══════════════════════════════════
+   BUILDERS (lazy)
+══════════════════════════════════ */
+const builders = {
+
+  /* SEC 2 – CORAZÓN */
+  2: function() {
+    const heart = document.getElementById('s2-heart');
+    const msg   = document.getElementById('s2-mensaje');
+    let puntos = [];
+    for (let t=0; t<Math.PI*2; t+=0.04)
+      for (let r=0.2; r<=1; r+=0.12) {
+        puntos.push({
+          x: r*16*Math.pow(Math.sin(t),3),
+          y: -r*(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))
+        });
+      }
+    let els = [];
+    puntos.forEach(p => {
+      let s = document.createElement('span');
+      s.className = 's2-text';
+      s.innerText = 'Ignacia';
+      s.style.left = (window.innerWidth/2  + p.x*22) + 'px';
+      s.style.top  = (window.innerHeight/2 + p.y*22) + 'px';
+      heart.appendChild(s); els.push(s);
+    });
+    let i=0, iv=setInterval(()=>{
+      if (i<els.length) { els[i++].classList.add('show'); }
+      else {
+        clearInterval(iv);
+        heart.classList.add('s2-latir');
+        els.forEach(e=>e.classList.add('s2-color'));
+        setTimeout(()=>{ msg.style.opacity=1; }, 1500);
+      }
+    }, 15);
+    const emojis=['💖','❤️','💘','💕','💞','💓'];
+    for (let j=0;j<80;j++) {
+      let e=document.createElement('div'); e.className='s2-emoji';
+      e.innerText=emojis[Math.floor(Math.random()*emojis.length)];
+      e.style.left=Math.random()*100+'vw';
+      e.style.top='-30px';
+      e.style.animationDuration=(4+Math.random()*6)+'s';
+      e.style.animationDelay=Math.random()*8+'s';
+      e.style.fontSize=(15+Math.random()*30)+'px';
+      e.style.position='absolute';
+      document.getElementById('sec2').appendChild(e);
+    }
+  },
+
+  /* SEC 3 – CARTA (bg words) */
+  3: function() {
+    const inner = document.getElementById('sec3-inner');
+    for (let i=0;i<200;i++) {
+      let s=document.createElement('span'); s.className='s3-bg';
+      s.innerText='IGNACIA';
+      s.style.top=Math.random()*220+'%';
+      s.style.left=Math.random()*100+'%';
+      s.style.fontSize=(12+Math.random()*28)+'px';
+      s.style.transform='rotate('+(Math.random()*360)+'deg)';
+      inner.appendChild(s);
+    }
+  },
+
+  /* SEC 4 – SOL */
+  4: function() {
+    const sec   = document.getElementById('sec4');
+    const cielo = document.getElementById('s4-cielo');
+    const W = sec.offsetWidth  || window.innerWidth;
+    const H = sec.offsetHeight || window.innerHeight;
+
+    for (let i=0;i<120;i++) {
+      let s=document.createElement('div'); s.className='s4-star';
+      s.style.top=Math.random()*H+'px'; s.style.left=Math.random()*W+'px';
+      s.style.animationDelay=Math.random()*3+'s';
+      cielo.appendChild(s);
+    }
+    for (let i=0;i<3;i++) {
+      let f=document.createElement('div'); f.className='s4-shooting';
+      f.style.top=Math.random()*(H*.5)+'px'; f.style.left=Math.random()*W+'px';
+      f.style.animationDelay=Math.random()*5+'s';
+      cielo.appendChild(f);
+    }
+    const frases=[
+      'Eres esa persona que ilumina mis días más oscuros ☀️',
+      'Desde el primer día que te vi iluminaste mis ojos y mi alma 💖',
+      'El brillo de tus ojos es lo más lindo que existe ✨',
+      'Eres mi luz en cada momento difícil 🌟',
+      'Contigo todo tiene más color 🌈',
+      'Tu sonrisa ilumina mi mundo 💫',
+      'Eres mi sol en los días nublados ☁️☀️',
+      'Tu amor es mi energía diaria ⚡',
+      'No hay oscuridad cuando estás tú 💛'
+    ];
+    let done=false;
+    function activate() {
+      if (done) return; done=true;
+      document.getElementById('s4-hint').style.display='none';
+      sec.classList.add('s4-day');
+      cielo.style.transition='opacity 2s'; cielo.style.opacity='0';
+      document.getElementById('s4-nombre').style.opacity=1;
+      document.getElementById('s4-mensaje').style.opacity=1;
+      for (let i=0;i<6;i++) {
+        let n=document.createElement('div'); n.className='s4-cloud';
+        let sz=120+Math.random()*120;
+        n.style.cssText=`width:${sz}px;height:${sz*.5}px;top:${10+Math.random()*60}%;left:${Math.random()*75}%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.5),rgba(255,255,255,.1) 70%);opacity:${.2+Math.random()*.3};animation:moverNube ${40+Math.random()*40}s linear infinite;`;
+        sec.appendChild(n);
+      }
+      for (let i=0;i<10;i++) {
+        let f=document.createElement('div'); f.className='s4-phrase';
+        f.innerText=frases[Math.floor(Math.random()*frases.length)];
+        f.style.left=(10+Math.random()*75)+'%';
+        f.style.animationDuration=(8+Math.random()*6)+'s';
+        f.style.animationDelay=(i*1.5)+'s';
+        sec.appendChild(f);
+      }
+    }
+    const sol = document.getElementById('s4-sol');
+    sol.addEventListener('click', activate);
+    sol.addEventListener('touchend', function(e){ e.preventDefault(); activate(); }, {passive:false});
+  },
+
+  /* SEC 5 – CONTADOR */
+  5: function() {
+    const sec5 = document.getElementById('sec5');
+    // collage
+    const collage = document.getElementById('s5-collage');
+    for (let i=1;i<=20;i++) {
+      const img=document.createElement('img');
+      img.src='foto'+i+'.jpg';
+      img.style.left=Math.random()*100+'%';
+      img.style.top=Math.random()*100+'%';
+      img.style.transform='rotate('+(Math.random()*30-15)+'deg)';
+      collage.appendChild(img);
+    }
+    // contador
+    const inicio=new Date('2026-01-01T18:00:00');
+    function tick() {
+      const d=new Date()-inicio;
+      const dd=Math.floor(d/86400000);
+      const hh=Math.floor((d/3600000)%24);
+      const mm=Math.floor((d/60000)%60);
+      const ss=Math.floor((d/1000)%60);
+      document.getElementById('s5-contador').innerHTML=`${dd} días ${hh} h ${mm} m ${ss} s`;
+    }
+    setInterval(tick,1000); tick();
+    // lluvia automática de corazones
+    const tipos=['💖','❤️','💗','💘','💝','💞','💕','💓'];
+    const floats=['💌','🌹','🌟','✨','💕'];
+    setInterval(()=>{
+      let c=document.createElement('div'); c.className='s5-heart';
+      c.innerHTML=tipos[Math.floor(Math.random()*tipos.length)];
+      c.style.left=Math.random()*100+'%'; c.style.top='-40px';
+      c.style.fontSize=(20+Math.random()*30)+'px';
+      let dur=4+Math.random()*3; c.style.animationDuration=dur+'s';
+      sec5.appendChild(c); setTimeout(()=>c.remove(),dur*1000);
+    },300);
+    setInterval(()=>{
+      let f=document.createElement('div'); f.className='s5-float';
+      f.innerHTML=floats[Math.floor(Math.random()*floats.length)];
+      f.style.left=Math.random()*100+'%'; f.style.fontSize='1.5em';
+      sec5.appendChild(f); setTimeout(()=>f.remove(),6000);
+    },700);
+    // interacción
+    const msgs=['Eres mi todo 💖','Cada día te amo más 💕','Gracias por existir 🌸','Mi corazón es tuyo ❤️','Juntos para siempre 💑','Eres mi felicidad 🌟','Iluminas mi vida ✨','Eres mi razón de sonreír 😊','No hay nadie como tú 💗','Eres mi sueño hecho realidad 🌠','Contigo todo es mejor 🌹','Me haces sentir vivo 💖'];
+    function interact(x,y) {
+      let m=document.createElement('div'); m.className='s5-msg';
+      m.innerText=msgs[Math.floor(Math.random()*msgs.length)];
+      m.style.left=Math.min(x, window.innerWidth-200)+'px';
+      m.style.top=Math.max(y-60,80)+'px';
+      sec5.appendChild(m); setTimeout(()=>m.remove(),4000);
+      let c=document.createElement('div'); c.className='s5-heart';
+      c.innerHTML=tipos[Math.floor(Math.random()*tipos.length)];
+      c.style.left=x+'px'; c.style.top=y+'px';
+      c.style.fontSize=(20+Math.random()*30)+'px';
+      let dur=4+Math.random()*2; c.style.animationDuration=dur+'s';
+      sec5.appendChild(c); setTimeout(()=>c.remove(),dur*1000);
+    }
+    sec5.addEventListener('click', e=>{ if(e.target===sec5||e.target.id==='s5-texto'||e.target.closest('#s5-texto')) interact(e.clientX,e.clientY); });
+    sec5.addEventListener('touchend', e=>{ const t=e.changedTouches[0]; interact(t.clientX,t.clientY); }, {passive:true});
+  },
+
+  /* SEC 6 – PUZZLE */
+  6: function() {
+    const sec6 = document.getElementById('sec6');
+    // fondo
+    const fondo=document.getElementById('s6-fondo');
+    for (let i=0;i<60;i++) {
+      let d=document.createElement('div'); d.className='s6-foto';
+      d.style.backgroundImage=`url(${Math.floor(Math.random()*19)+1}.jpg)`;
+      d.style.left=Math.random()*100+'vw';
+      const sz=50+Math.random()*70; d.style.width=sz+'px'; d.style.height=sz+'px';
+      d.style.animationDuration=(12+Math.random()*15)+'s';
+      d.style.animationDelay=Math.random()*10+'s';
+      fondo.appendChild(d);
+    }
+    // puzzle
+    const puzzle=document.getElementById('s6-puzzle');
+    const msg=document.getElementById('s6-msg');
+    const btnCarta=document.getElementById('s6-btnCarta');
+    const carta=document.getElementById('s6-carta');
+    const sz=Math.min(window.innerWidth-24,360);
+    const ps=Math.floor(sz/4);
+    puzzle.style.width=sz+'px'; puzzle.style.height=sz+'px';
+
+    let correct=[];
+    for(let r=0;r<4;r++) for(let c=0;c<4;c++) correct.push(`${c*(100/3).toFixed(2)}% ${r*(100/3).toFixed(2)}%`);
+    let cur=[...correct].sort(()=>Math.random()-.5);
+    let sel=null, won=false;
+
+    function render() {
+      puzzle.innerHTML='';
+      cur.forEach((pos,i)=>{
+        let d=document.createElement('div'); d.className='s6-piece';
+        d.style.width=ps+'px'; d.style.height=ps+'px';
+        d.style.backgroundPosition=pos;
+        d.addEventListener('click',()=>pick(i));
+        puzzle.appendChild(d);
+      });
+    }
+    function pick(i) {
+      if (sel===null) { sel=i; puzzle.children[i].classList.add('sel'); }
+      else { [cur[sel],cur[i]]=[cur[i],cur[sel]]; sel=null; render(); check(); }
+    }
+    function check() {
+      if (!won && JSON.stringify(cur)===JSON.stringify(correct)) {
+        won=true;
+        msg.innerHTML='Amor mio amo cada parte de ti.<br><br><b>Te Amo Mucho 💖</b>';
+        msg.style.display='block'; btnCarta.style.display='block';
+        for(let i=0;i<50;i++){
+          let h=document.createElement('div'); h.className='s6-hfall';
+          h.innerHTML='💖'; h.style.left=Math.random()*100+'vw';
+          h.style.fontSize=(15+Math.random()*25)+'px';
+          h.style.animationDuration=(5+Math.random()*5)+'s';
+          sec6.appendChild(h); setTimeout(()=>h.remove(),8000);
+        }
+      }
+    }
+    btnCarta.addEventListener('click',()=>carta.classList.add('open'));
+    carta.addEventListener('click',()=>carta.classList.remove('open'));
+    render();
+  }
+};
+</script>
+</body>
+</html>

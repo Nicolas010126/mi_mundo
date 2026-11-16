@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>💖 Nuestro Amor Es Eterno 💖</title>
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background: #000;
+    overflow: hidden;
+    height: 100vh;
+    touch-action: none;
+    position: relative;
+}
+#texto-central {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3em;
+    color: #ff6f91;
+    text-shadow: 2px 2px #fff;
+    z-index: 10;
+    pointer-events: none; /* para que no interfiera con los clics */
+}
+
+/* Título y cronómetro */
+h1 {
+    margin-top: 20px;
+    font-size: 3em;
+    text-align: center;
+    color: #fff;
+    text-shadow: 2px 2px #ff6f91;
+    position: relative;
+    z-index: 10;
+}
+#contador {
+    text-align: center;
+    font-size: 2em;
+    color: #fff;
+    position: relative;
+    z-index: 10;
+    margin-bottom: 20px;
+}
+
+/* Mensajes que desaparecen */
+.mensaje {
+    position: absolute;
+    background: rgba(255, 111, 145, 0.8);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1.5em;
+    opacity: 0;
+    animation: aparecer 1s forwards, desaparecer 3s forwards 1s;
+    pointer-events: none;
+    z-index: 10;
+}
+@keyframes aparecer {
+    0% {opacity:0; transform: scale(0.5);}
+    100% {opacity:1; transform: scale(1);}
+}
+@keyframes desaparecer {
+    0% {opacity:1;}
+    100% {opacity:0;}
+}
+
+/* Corazones */
+.corazon {
+    position: absolute;
+    pointer-events: none;
+    animation: caer linear forwards;
+    z-index: 5;
+}
+@keyframes caer {
+    0% { transform: translateY(-50px) rotate(0deg); opacity:1;}
+    100% { transform: translateY(100vh) rotate(360deg); opacity:0;}
+}
+
+/* Letras flotantes */
+.letra {
+    position: absolute;
+    font-size: 1.5em;
+    animation: subir 6s linear forwards;
+    color: #fff;
+    pointer-events: none;
+    z-index: 5;
+}
+@keyframes subir {
+    0% { transform: translateY(100vh) rotate(0deg); opacity:0; }
+    50% { opacity:1; }
+    100% { transform: translateY(-50px) rotate(360deg); opacity:0; }
+}
+
+/* Fondo collage */
+#collage {
+    position: absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    z-index:1;
+    overflow: hidden;
+}
+#collage img {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    opacity: 0.3;
+    transition: transform 5s, opacity 5s;
+}
+</style>
+</head>
+<body>
+
+<h1>💖 Nuestro Amor 💖</h1>
+<div id="contador"></div>
+
+<div id="collage">
+    <!-- Aquí se insertarán las fotos automáticamente -->
+</div>
+<div id="texto-central">Te amare por siempre 💕</div>
+
+<audio id="musica" loop>
+    <source src="ignaciaM.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// ===== Cronómetro =====
+const fechaInicio = new Date("2026-01-01T18:00:00");
+function actualizarContador() {
+    const ahora = new Date();
+    const diferencia = ahora - fechaInicio;
+
+    const dias = Math.floor(diferencia / (1000*60*60*24));
+    const horas = Math.floor((diferencia/(1000*60*60))%24);
+    const minutos = Math.floor((diferencia/(1000*60))%60);
+    const segundos = Math.floor((diferencia/1000)%60);
+
+    document.getElementById("contador").innerHTML = 
+        `${dias} días ${horas} h ${minutos} m ${segundos} s`;
+}
+setInterval(actualizarContador,1000);
+actualizarContador();
+
+// ===== Mensajes =====
+const mensajes = [
+    "Eres mi todo 💖",
+    "Cada día te amo más 💕",
+    "Gracias por existir 🌸",
+    "Mi corazón es tuyo ❤️",
+    "Juntos para siempre 💑",
+    "Eres mi felicidad 🌟",
+    "Iluminas mi vida ✨",
+    "Cada momento contigo es único 💌",
+    "No hay nadie como tú 💗",
+    "Eres mi razón de sonreír 😊",
+    "Contigo todo es más hermoso 🌹",
+    "Me haces sentir completo 💘",
+    "Eres mi sueño hecho realidad 🌠",
+    "Nunca dejo de pensar en ti 💓",
+    "Eres mi estrella brillante ✨",
+    "Cada beso tuyo es magia 💋",
+    "Mi mundo es mejor gracias a ti 🌎",
+    "Siempre quiero abrazarte 💞",
+    "Eres la melodía de mi corazón 🎶",
+    "Te amo hasta el infinito ❤️",
+    "Tenerte a mi lado es mi mayor alegría 🌸",
+    "Tus ojos iluminan mi alma 💖",
+    "Cada día contigo es un regalo 🎁",
+    "Eres mi calma y mi tormenta 💫",
+    "Contigo todo tiene sentido 🌹",
+    "Eres mi lugar favorito en el mundo 🏡",
+    "Mi corazón late por ti 💓",
+    "Eres mi inspiración diaria ✨",
+    "Siempre quiero verte sonreír 😊",
+    "Cada momento contigo es eterno 💌",
+    "Eres la razón de mis mejores días 🌟",
+    "Me haces sentir vivo 💖",
+    "No hay distancia que nos separe 🌎",
+    "Eres mi refugio y mi alegría 💞",
+    "Quiero cuidarte siempre ❤️",
+    "Tu risa es mi música favorita 🎶",
+    "Eres la magia que llena mi vida ✨",
+    "Contigo todo es mejor 🌸",
+    "Mi corazón solo late por ti 💗",
+    "Eres mi luz en la oscuridad 🌠",
+    "Eres mi amor verdadero 💖",
+    "Cada día a tu lado es un sueño 🌹",
+    "Eres mi sol en los días nublados ☀️",
+    "Mi vida es más dulce contigo 🍯",
+    "Tu amor me hace volar alto ✈️",
+    "Eres mi compañía perfecta 💕",
+    "Me completas en todo sentido ❤️",
+    "Cada instante contigo es mágico ✨",
+    "Eres mi razón para sonreír siempre 😊",
+    "Nunca dejo de amarte 💖",
+    "Eres mi tesoro más preciado 💎",
+    "Contigo quiero recorrer el mundo 🌍",
+    "Eres mi alegría infinita 🌸",
+    "Tu amor llena cada rincón de mi corazón 💓",
+    "Eres mi vida, mi todo 💘",
+    "Cada abrazo tuyo es un refugio 💞",
+    "Contigo quiero envejecer ❤️",
+    "Eres la historia más hermosa de mi vida 📖",
+    "Mi corazón te pertenece 💖",
+    "Eres mi eterna inspiración 🌟",
+    "Mi amor por ti no tiene límites 💕",
+    "Cada mirada tuya me enamora más 💗"
+];
+// ===== Mensajes personalizados =====
+function mostrarMensaje(x,y){
+    const msg=document.createElement("div");
+    msg.classList.add("mensaje");
+    msg.style.left = x + "px";
+    msg.style.top = y + "px";
+    // Elegir frase aleatoria
+    msg.innerHTML = mensajes[Math.floor(Math.random()*mensajes.length)];
+    document.body.appendChild(msg);
+    setTimeout(()=>msg.remove(),4000);
+}
+
+// ===== Corazones =====
+const corazonesTipos = ["💖","❤️","💗","💘","💝","💞","💕","💓","💟","❣️"];
+function crearCorazon(x,y){
+    const c = document.createElement("div");
+    c.classList.add("corazon");
+    c.style.left = x + "px";
+    c.style.top = y + "px";
+    c.style.fontSize = (20+Math.random()*30) + "px";
+    c.innerHTML = corazonesTipos[Math.floor(Math.random()*corazonesTipos.length)];
+    const dur = 4 + Math.random()*3; // duración aleatoria
+    c.style.animationDuration = dur+"s";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), dur*1000);
+}
+
+// ===== Lluvia de corazones automática =====
+function lluviaCorazones(){
+    const x = Math.random()*window.innerWidth;
+    crearCorazon(x,-50);
+}
+setInterval(lluviaCorazones, 300); // cada 0.3s
+
+// ===== Letras flotantes automáticas =====
+const letras = ["💌","🌹","🌟","✨","💕"];
+function crearLetra(){
+    const l = document.createElement("div");
+    l.classList.add("letra");
+    l.style.left = Math.random()*window.innerWidth + "px";
+    l.innerHTML = letras[Math.floor(Math.random()*letras.length)];
+    document.body.appendChild(l);
+    setTimeout(()=>l.remove(),6000);
+}
+setInterval(crearLetra,700);
+
+// ===== Interacción tactil/clic =====
+const musica = document.getElementById("musica");
+function interactuar(e){
+    const x = e.touches ? e.touches[0].clientX : e.clientX;
+    const y = e.touches ? e.touches[0].clientY : e.clientY;
+    crearCorazon(x,y);
+    mostrarMensaje(x,y);
+    if(musica.paused) musica.play().catch(()=>console.log("Toca para reproducir en móvil"));
+}
+document.body.addEventListener("touchstart",interactuar);
+document.body.addEventListener("click",interactuar);
+
+// ===== Música automática en PC =====
+window.addEventListener("load",()=>{musica.play().catch(()=>console.log("Requiere primer toque en móvil"));});
+
+// ===== Fondo collage con tus fotos =====
+const fotos = [];
+for(let i=1;i<=20;i++){
+    fotos.push(`foto${i}.jpg`); // asegúrate de tener foto1.jpg ... foto20.jpg en la misma carpeta
+}
+
+
+const collage = document.getElementById("collage");
+fotos.forEach(f=>{
+    const img = document.createElement("img");
+    img.src = f;
+    img.style.left = Math.random()*window.innerWidth + "px";
+    img.style.top = Math.random()*window.innerHeight + "px";
+    img.style.transform = `rotate(${Math.random()*30-15}deg)`;
+    collage.appendChild(img);
+});
+</script>
+</body>
+</html>

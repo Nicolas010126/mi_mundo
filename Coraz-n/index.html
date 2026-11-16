@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Para Ignacia 💖</title>
+
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    background: radial-gradient(circle at top, #1a001a, #000);
+    height:100vh;
+    font-family:Arial;
+}
+
+/* CONTENEDOR */
+#heart{
+    position:absolute;
+    top:45%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:100vw;
+    height:100vh;
+}
+
+/* LATIDO */
+.latir{
+    animation:latido 2s infinite;
+}
+
+@keyframes latido{
+    0%{transform:translate(-50%,-50%) scale(1);}
+    50%{transform:translate(-50%,-50%) scale(1.05);}
+    100%{transform:translate(-50%,-50%) scale(1);}
+}
+
+/* TEXTO CORAZÓN */
+.text{
+    position:absolute;
+    font-size:12px;
+    white-space:nowrap;
+    opacity:0;
+    transform:scale(0.5);
+    transition:all 0.3s ease;
+}
+
+/* APARECER */
+.text.show{
+    opacity:1;
+    transform:scale(1);
+}
+
+/* COLOR + BRILLO */
+.color{
+    animation:colorGlow 3s infinite alternate;
+}
+
+@keyframes colorGlow{
+    0%{
+        color:#ff4da6;
+        text-shadow:0 0 5px #ff4da6, 0 0 10px #ff4da6;
+    }
+    50%{
+        color:#ff99cc;
+        text-shadow:0 0 10px #ff99cc, 0 0 20px #ff99cc;
+    }
+    100%{
+        color:#ff4da6;
+        text-shadow:0 0 5px #ff4da6, 0 0 15px #ff4da6;
+    }
+}
+
+/* MENSAJE ABAJO */
+#mensaje{
+    position:fixed;
+    bottom:30px;
+    width:100%;
+    text-align:center;
+    color:white;
+    font-size:16px;
+    opacity:0;
+    transition:2s;
+}
+
+/* EMOJIS */
+.emoji{
+    position:absolute;
+    animation:fall linear infinite;
+}
+
+@keyframes fall{
+    0%{transform:translateY(-10vh); opacity:1;}
+    100%{transform:translateY(110vh); opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<div id="heart"></div>
+
+<div id="mensaje">
+Amor mio amo cada parte, cada faceta, cada momento a tu lado 💖<br>
+Cuando no estoy contigo solo pienso en ti y en hacerte feliz 🌹<br>
+<b>Te Amo Mucho Ignacia 💕</b>
+</div>
+
+<script>
+const heart = document.getElementById("heart");
+const mensaje = document.getElementById("mensaje");
+
+/* ===== GENERAR PUNTOS ===== */
+let puntos = [];
+for(let t = 0; t < Math.PI * 2; t += 0.04){
+    for(let r = 0.2; r <= 1; r += 0.12){
+        let x = r * 16 * Math.pow(Math.sin(t),3);
+        let y = -r * (13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t));
+        puntos.push({x,y});
+    }
+}
+
+/* ===== CREAR LETRAS ===== */
+let elementos = [];
+puntos.forEach(p=>{
+    let span = document.createElement("span");
+    span.className = "text";
+    span.innerText = "Ignacia";
+
+    span.style.left = (window.innerWidth/2 + p.x*22) + "px";
+    span.style.top = (window.innerHeight/2 + p.y*22) + "px";
+
+    heart.appendChild(span);
+    elementos.push(span);
+});
+
+/* ===== ANIMACIÓN ARMADO ===== */
+let i = 0;
+let intervalo = setInterval(()=>{
+    if(i < elementos.length){
+        elementos[i].classList.add("show");
+        i++;
+    }else{
+        clearInterval(intervalo);
+
+        // activar latido
+        heart.classList.add("latir");
+
+        // activar color
+        elementos.forEach(e=>e.classList.add("color"));
+
+        // mostrar mensaje
+        setTimeout(()=>{
+            mensaje.style.opacity = 1;
+        },1500);
+    }
+},15);
+
+/* ===== EMOJIS ===== */
+let emojis = ["💖","❤️","💘","💕","💞","💓"];
+
+for(let i=0; i<80; i++){
+    let e = document.createElement("div");
+    e.className = "emoji";
+    e.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+
+    e.style.left = Math.random()*100 + "vw";
+    e.style.animationDuration = (4 + Math.random()*6) + "s";
+    e.style.fontSize = (15 + Math.random()*30) + "px";
+
+    document.body.appendChild(e);
+}
+</script>
+
+</body>
+</html>

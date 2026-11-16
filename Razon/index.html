@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Ignacia 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #fdf6ee;
+    --blush: #f5c9c0;
+    --rose: #e8836f;
+    --deep: #7a3b2e;
+    --soft: #f9e8e0;
+    --text: #3d1f15;
+  }
+
+  body {
+    background: var(--cream);
+    font-family: 'Caveat', cursive;
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Floating petals background */
+  .petals-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .petal {
+    position: absolute;
+    font-size: 1.2rem;
+    opacity: 0;
+    animation: fall linear infinite;
+  }
+
+  @keyframes fall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 0.7; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* Pages / Screens */
+  .screen {
+    display: none;
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+  }
+  .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+  /* === SCREEN 1: Cover === */
+  #cover {
+    background: radial-gradient(ellipse at 60% 40%, #fce8df 0%, var(--cream) 70%);
+    text-align: center;
+    gap: 1.5rem;
+  }
+
+  .envelope {
+    font-size: 5rem;
+    animation: bounce 2s ease-in-out infinite;
+    cursor: pointer;
+    filter: drop-shadow(0 4px 12px #e8836f55);
+    transition: transform 0.2s;
+  }
+  .envelope:hover { transform: scale(1.15) rotate(-5deg); }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  #cover h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 8vw, 3.2rem);
+    color: var(--deep);
+    line-height: 1.2;
+  }
+  #cover h1 em {
+    font-style: italic;
+    color: var(--rose);
+  }
+
+  #cover p {
+    font-size: 1.3rem;
+    color: #9e5a48;
+    max-width: 280px;
+  }
+
+  .btn {
+    background: var(--rose);
+    color: white;
+    border: none;
+    padding: 0.8rem 2.2rem;
+    border-radius: 50px;
+    font-family: 'Caveat', cursive;
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 0 4px 16px #e8836f55;
+    transition: transform 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 24px #e8836f66; }
+  .btn:active { transform: translateY(0); }
+
+  /* === SCREEN 2: Reasons carousel === */
+  #reasons {
+    gap: 2rem;
+    text-align: center;
+    background: radial-gradient(ellipse at 30% 70%, #fce0d5 0%, var(--cream) 65%);
+  }
+
+  #reasons h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 5vw, 2rem);
+    color: var(--deep);
+  }
+
+  .card-stack {
+    position: relative;
+    width: min(320px, 90vw);
+    height: 200px;
+  }
+
+  .reason-card {
+    position: absolute;
+    inset: 0;
+    background: white;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 1.5rem;
+    box-shadow: 0 6px 24px #e8836f22;
+    opacity: 0;
+    transform: translateX(60px) scale(0.95);
+    transition: opacity 0.5s, transform 0.5s;
+    border: 2px solid var(--blush);
+  }
+  .reason-card.current {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  .reason-card .emoji { font-size: 2.5rem; }
+  .reason-card .text {
+    font-size: 1.2rem;
+    color: var(--deep);
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .progress-dots {
+    display: flex;
+    gap: 8px;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--blush);
+    transition: background 0.3s, transform 0.3s;
+  }
+  .dot.active { background: var(--rose); transform: scale(1.3); }
+
+  /* === SCREEN 3: Message === */
+  #message {
+    background: radial-gradient(ellipse at 70% 30%, #fce8df 0%, var(--cream) 65%);
+    gap: 1.8rem;
+    text-align: center;
+  }
+
+  #message h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+    color: var(--deep);
+    font-style: italic;
+  }
+
+  .letter-box {
+    background: white;
+    border-radius: 20px;
+    padding: 1.8rem 1.5rem;
+    max-width: 340px;
+    width: 100%;
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: var(--text);
+    box-shadow: 0 6px 24px #e8836f22;
+    border: 2px solid var(--blush);
+    animation: fadeUp 0.8s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .signature {
+    font-size: 1.5rem;
+    color: var(--rose);
+    font-weight: 600;
+  }
+
+  /* === SCREEN 4: Finale === */
+  #finale {
+    background: radial-gradient(ellipse at 50% 50%, #fce8df 0%, var(--cream) 70%);
+    gap: 1.5rem;
+    text-align: center;
+  }
+
+  #finale h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 7vw, 2.8rem);
+    color: var(--deep);
+    line-height: 1.3;
+  }
+
+  .heart-burst {
+    font-size: 4rem;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+
+  .hearts-rain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .floating-heart {
+    position: absolute;
+    font-size: 1.5rem;
+    opacity: 0;
+    animation: floatUp 3s ease-out forwards;
+  }
+  @keyframes floatUp {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-200px) scale(0.5); }
+  }
+
+  /* Transitions */
+  .fade-in { animation: fadeUp 0.6s ease both; }
+
+  /* Back button */
+  .back-btn {
+    background: none;
+    border: 2px solid var(--blush);
+    color: var(--rose);
+    padding: 0.5rem 1.4rem;
+    border-radius: 50px;
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .back-btn:hover { background: var(--soft); }
+</style>
+</head>
+<body>
+
+<!-- Floating petals -->
+<div class="petals-bg" id="petalsContainer"></div>
+
+<!-- SCREEN 1: Cover -->
+<div class="screen active" id="cover">
+  <div class="envelope" id="envelopeBtn">💌</div>
+  <h1>Para ti,<br><em>Ignacia</em></h1>
+  <p>Hay algo que quiero que sepas...</p>
+  <button class="btn" onclick="goTo('reasons')">Abrir ✨</button>
+</div>
+
+<!-- SCREEN 2: Reasons -->
+<div class="screen" id="reasons">
+  <h2>Razones por las que<br>me encantas 🌸</h2>
+
+  <div class="card-stack" id="cardStack"></div>
+
+  <div class="progress-dots" id="dots"></div>
+
+  <button class="btn" id="nextBtn" onclick="nextCard()">Siguiente →</button>
+  <button class="back-btn" onclick="goTo('cover')">← Volver</button>
+</div>
+
+<!-- SCREEN 3: Letter -->
+<div class="screen" id="message">
+  <h2>"Querida Ignacia..."</h2>
+  <div class="letter-box">
+    <p>Sé que no siempre lo digo con palabras,<br>
+    pero cada vez que me envías un "buenos días"<br>
+    o un "te amo"… me doy cuenta de lo afortunado<br>
+    que soy. 🌅</p>
+    <br>
+    <p>Y de lo mucho que te preocupas por mí. 🥺</p>
+    <br>
+    <p>Muchas gracias por todo, mi princesa.<br>
+    Nunca olvides que te amaré por siempre. 💛</p>
+    <br>
+    <p class="signature">Siempre tuyo 💖</p>
+  </div>
+  <button class="btn" onclick="goTo('finale')">Seguir →</button>
+  <button class="back-btn" onclick="goTo('reasons')">← Volver</button>
+</div>
+
+<!-- SCREEN 4: Finale -->
+<div class="screen" id="finale">
+  <div class="hearts-rain" id="heartsRain"></div>
+  <div class="heart-burst">💖</div>
+  <h2>¡Te quiero<br>un montón, Ignacia!</h2>
+  <p style="font-size:1.3rem; color:#9e5a48; max-width:260px;">
+    Espero que esto te haya sacado al menos una sonrisita 😊
+  </p>
+  <button class="btn" onclick="restart()">Volver al inicio 🌸</button>
+</div>
+
+<script>
+  // ---- Petals ----
+  const petalsContainer = document.getElementById('petalsContainer');
+  const petalEmojis = ['🌸','🌺','✿','❀','🌷'];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.textContent = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.fontSize = (0.8 + Math.random() * 1) + 'rem';
+    p.style.animationDuration = (6 + Math.random() * 8) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    petalsContainer.appendChild(p);
+  }
+
+  // ---- Reasons ----
+  const reasons = [
+    { emoji: '😂', text: 'Porque tu risa es contagiosa hasta cuando intentas aguantarla' },
+    { emoji: '🧠', text: 'Porque eres más lista de lo que crees (y sí, me doy cuenta)' },
+    { emoji: '🐣', text: 'Porque eres tiernísima aunque finjas que no' },
+    { emoji: '☕', text: 'Porque contigo hasta los momentos aburridos son buenos' },
+    { emoji: '🌙', text: 'Porque me alegras el día sin ni siquiera intentarlo' },
+    { emoji: '🦋', text: 'Porque hay algo especial en ti que no sé explicar, pero sí sentir' },
+  ];
+
+  let currentCard = 0;
+  const stack = document.getElementById('cardStack');
+  const dotsEl = document.getElementById('dots');
+  const nextBtn = document.getElementById('nextBtn');
+
+  function buildCards() {
+    stack.innerHTML = '';
+    dotsEl.innerHTML = '';
+    reasons.forEach((r, i) => {
+      const card = document.createElement('div');
+      card.className = 'reason-card' + (i === 0 ? ' current' : '');
+      card.id = 'card' + i;
+      card.innerHTML = `<div class="emoji">${r.emoji}</div><div class="text">${r.text}</div>`;
+      stack.appendChild(card);
+
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.id = 'dot' + i;
+      dotsEl.appendChild(dot);
+    });
+    currentCard = 0;
+    updateNextBtn();
+  }
+
+  function updateNextBtn() {
+    nextBtn.textContent = currentCard < reasons.length - 1 ? 'Siguiente →' : '¡Ver mensaje! 💌';
+    nextBtn.onclick = currentCard < reasons.length - 1 ? nextCard : () => goTo('message');
+  }
+
+  function nextCard() {
+    document.getElementById('card' + currentCard).classList.remove('current');
+    document.getElementById('dot' + currentCard).classList.remove('active');
+    currentCard++;
+    document.getElementById('card' + currentCard).classList.add('current');
+    document.getElementById('dot' + currentCard).classList.add('active');
+    updateNextBtn();
+  }
+
+  // ---- Navigation ----
+  function goTo(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (id === 'reasons') buildCards();
+    if (id === 'finale') launchHearts();
+  }
+
+  function restart() {
+    document.getElementById('heartsRain').innerHTML = '';
+    goTo('cover');
+  }
+
+  // ---- Hearts finale ----
+  function launchHearts() {
+    const container = document.getElementById('heartsRain');
+    container.innerHTML = '';
+    const emojis = ['💖','💕','💗','💓','🌸','✨','💛'];
+    let count = 0;
+    const interval = setInterval(() => {
+      if (count++ > 30) { clearInterval(interval); return; }
+      const h = document.createElement('div');
+      h.className = 'floating-heart';
+      h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      h.style.left = Math.random() * 90 + 'vw';
+      h.style.bottom = '10vh';
+      h.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
+      h.style.animationDuration = (2 + Math.random() * 2) + 's';
+      h.style.animationDelay = '0s';
+      container.appendChild(h);
+      setTimeout(() => h.remove(), 4000);
+    }, 150);
+  }
+</script>
+</body>
+</html>
